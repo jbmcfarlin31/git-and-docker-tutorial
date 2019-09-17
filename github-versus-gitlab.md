@@ -98,4 +98,4 @@ So now that you understand Git, let's take a look at what is commonly used with 
 
 Microservices are genuinely run as [containers](https://www.docker.com/resources/what-container) (which is another definition in and of itself), and the containers run on a piece of softwarer called [Docker](https://www.docker.com/). 
 
-If you are ready to see how Git can be used alongside with Docker, please continue on the tutorials by clicking here: [What is Docker?](https://github.com/jbmcfarlin31/git-and-docker-tutorial/what-is-docker.md)
+If you are ready to see how Git can be used alongside with Docker, please continue on the tutorials by clicking here: [What is Docker?](https://github.com/jbmcfarlin31/git-and-docker-tutorial/blob/master/what-is-docker.md)
