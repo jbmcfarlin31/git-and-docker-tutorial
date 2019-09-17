@@ -29,3 +29,10 @@ sudo apt-get update
 
 # Install Docker
 sudo apt-get -y install docker-ce
+
+# Add the user(s) to the Docker group, ensuring permissions
+# Replace `root` with the username you want - usually you want your standard user/service account and root account.
+sudo usermod -aG docker root
+
+# Reload the docker daemon and restart the service
+sudo systemctl daemon-reload && service docker restart
