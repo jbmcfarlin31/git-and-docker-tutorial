@@ -104,7 +104,18 @@ This command tells the docker daemon that we are going to build an image, we pas
 
 You should now see the following context occur:
 ```bash
-
+latest: Pulling from docker/whalesay
+e190868d63f8: Pull complete 
+909cd34c6fd7: Pull complete 
+0b9bfabab7c1: Pull complete 
+a3ed95caeb02: Pull complete 
+00bf65475aba: Pull complete 
+c57b6bcc83e3: Pull complete 
+8978f6879e2f: Pull complete 
+8eed3712d2cf: Pull complete 
+Digest: sha256:178598e51a26abbc958b8a2e48825c90bc22e641de3d31e18aaf55f3258ba93b
+Status: Downloaded newer image for docker/whalesay:latest
+43360d25ecb20e54f32185af7f9c00ffdc1d7569d7c8ac8db419e3c9979da6db
 ```
 
-Docker leverages the use of a cache so that when builds have pulled their images, and executed the layers of the Dockerfile, they can be reused elsewhere in subsequent builds for faster improvement and performance. There are tons of documentation online for optimizing your docker builds and the idea behind this is usually you pair your docker builds and deploys with a CI/CD pipeline (such as GitLab or GitHub), so that the automated process happens for you versus manually having to run theses commands. When the cache grabs the layers, if you use the same commands in a different Dockerfile, they will be reused from the cache, speeding up build time.
+Docker leverages the use of a cache so that when builds have pulled their images, and executed the layers of the Dockerfile (indicated by `Pull complete`), they can be reused elsewhere in subsequent builds for faster improvement and performance. There are tons of documentation online for optimizing your docker builds and the idea behind this is usually you pair your docker builds and deploys with a CI/CD pipeline (such as GitLab or GitHub), so that the automated process happens for you versus manually having to run theses commands. When the cache grabs the layers, if you use the same commands in a different Dockerfile, they will be reused from the cache, speeding up build time.
