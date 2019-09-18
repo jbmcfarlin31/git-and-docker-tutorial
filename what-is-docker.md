@@ -136,6 +136,17 @@ Digest: sha256:178598e51a26abbc958b8a2e48825c90bc22e641de3d31e18aaf55f3258ba93b
 Status: Image is up to date for docker/whalesay:latest
 ```
 
+## Viewing pulled and built images
+
+To list what images have been pulled down locally and/or built, you can do:
+```bash
+$> docker images
+REPOSITORY                   TAG                 IMAGE ID            CREATED             SIZE
+docker/whalesay              latest              6b362a9f73eb        4 years ago         247MB
+```
+
+If you manually built your image using `docker built -t TAG .`, the `TAG` name will be listed here.
+
 ## Running the built container
 
 TODO: Add more content here...
@@ -158,6 +169,12 @@ Status: Downloaded newer image for docker/whalesay:latest
 6fcf2f8cccbae6f875d9536882066fbd4b6af94b208393f6a64546eb7edbe263
 ```
 
+If the container image has already been built, you will not get the `Pull ...` statements, you will just get a UUID for the container:
+```bash
+$> docker run --name whalesay -dit docker/whalesay
+f58554caab0356ea74285f354c508c1d515b8ff080b9f0b595dfa23bbb861674
+```
+
 ## View running containers
 
 TODO: Add more content here...
@@ -167,3 +184,37 @@ $> docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 43360d25ecb2        docker/whalesay     "/bin/bash"         39 seconds ago      Up 38 seconds                           whalesay
 ```
+
+## Getting into a container
+
+TODO: Add more content here...
+
+To get inside a running container you can do the following, notice the change from `$` to `#`:
+```bash
+$> docker exec -it whalesay sh
+#
+```
+This means you are now inside the container and can execute linux commands that have been loaded into the container via your Dockerfile. <b>Remember, containers are meant to be lightweight, and only include the packages/libraries needed for the application to function!</b>
+
+## Debugging a container
+
+TODO: Add more content here...
+
+To view the `stdout` or `stderr` of the container, you can just: `docker logs <container_name>` (e.g. `docker logs whalesay`)
+
+## Removing resources (images or containers)
+
+TODO: Add more content here...
+
+To remove a specific image, you can do: `docker rmi <image_tag>` (e.g. `docker rmi whalesay`)
+If the image is not in use (e.g. in a running container), you can remove it. Otherwise, you will need to stop the container (`docker stop whalesay`) or add the `force` flag, such as `docker rmi -f whalesay`.
+
+To remove a specific container, you can do: `docker rmi <container_name>` (e.g. `docker rm whalesay`)
+If the container is running, this will error - but can be removed by adding a `force` flag as well: `docker rm -f whalesay`.
+
+## Advanced Docker Topics
+
+TODO: Add more content here...
+
+Inspecting a docker resource: `docker inspect <image_tag>/<container_name>`
+Using docker filters for resources: `docker images -f dangling=true`
