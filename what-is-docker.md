@@ -138,6 +138,9 @@ Status: Image is up to date for docker/whalesay:latest
 
 ## Viewing pulled and built images
 
+The command `docker images` can be used to show what images are currently pulled down onto the local repository.
+This is basically doing an `ls` command within the docker daemon.
+
 To list what images have been pulled down locally and/or built, you can do:
 ```bash
 $> docker images
@@ -149,7 +152,9 @@ If you manually built your image using `docker built -t TAG .`, the `TAG` name w
 
 ## Running the built container
 
-TODO: Add more content here...
+Once you have built your image or pulled an image down, you can run that image as a container so that the application can be deployed and available.
+
+<b>NOTE: there are a variety of docker images presented on [Docker Hub](https://hub.docker.com/) that can be used for your container, or you can  build your own as mentioned above.</b>
 
 We can run a container by performing the following:
 ```bash
@@ -174,39 +179,55 @@ If the container image has already been built, you will not get the `Pull ...` s
 $> docker run --name whalesay -dit docker/whalesay
 f58554caab0356ea74285f354c508c1d515b8ff080b9f0b595dfa23bbb861674
 ```
+To check if your container is running, refer to the next step.
 
 ## View running containers
 
-TODO: Add more content here...
+When a container has been executed - sometimes they stay running based off the flags passed into the `docker run` statement, and sometimes they exit because they completed their job. Remember, a container is meant to do one thing and are considered ephemeral. They do not need to be long-lived (and in fact, are encouraged not to be!). One way to see if your container is running is to utilize docker's `ps` command, which is similar to linux `ps` command for processes. This instructs the docker daemon to show a list of running containers.
 
+Here is an example:
 ```bash
 $> docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 43360d25ecb2        docker/whalesay     "/bin/bash"         39 seconds ago      Up 38 seconds                           whalesay
 ```
 
+Now, there are a handful of flags that can be passed to the `ps` command, especially if the container ran and exited. You might see this with a container that spins up, does some math computations, and exits (obviously a super basic use case... but you get the point). In this case, running a `docker ps` will not show it as a `running` container because it has exited. This is where the `-a` flag comes into play: `docker ps -a`.
+
+This command will show you ALL containers both running and stopped (exited), and then from there you can troubleshoot or view the logs of your container to see why it stopped if it was not supposed to.
+
+Another useful flag is the `-n INT` flag, for example `docker ps -n 1`. This tells docker to only pull back the first most recent container that was last deployed (whether running or not). Now the `INT` can be changed to anything of your choice as well.
+
 ## Getting into a container
 
-TODO: Add more content here...
+When a container comes up, sometimes it is useful to either get data from it, view other logs or processes within it, or just to do basic troubleshooting. Since a container is a shared subset of linux processes and namespaces, you can essentially `ssh` into the container.
 
 To get inside a running container you can do the following, notice the change from `$` to `#`:
 ```bash
 $> docker exec -it whalesay sh
 #
 ```
+
 This means you are now inside the container and can execute linux commands that have been loaded into the container via your Dockerfile. <b>Remember, containers are meant to be lightweight, and only include the packages/libraries needed for the application to function!</b>
+
+You should also note the command at the end `sh`. This a requirement for the `exec` command because this tells the container what you are going to do - and it has to be a command that is installed within the container, otherwise you will get an error.
+
+I know what you are thinking... _"What does the `-it` mean?"_, so let's cover that. Those are docker flags for the exec command - and in this case, the `-i` means interactive and the `-t` means terminal. This is what allows you to _ssh_ into the container interactively. There are a handful of other flags that can be passed, just hit up the docker documentation for full explanations.
 
 ## Debugging a container
 
-TODO: Add more content here...
+Sometimes it is necessary to figure out why a container is not performing the way you expected it to. This means looking at processes or components within the container using `exec`, and more often then that it also means looking at application and/or system logs. Docker has a convenient way for you to view this using the `logs` command in conjunction with docker.
 
-To view the `stdout` or `stderr` of the container, you can just: `docker logs <container_name>` (e.g. `docker logs whalesay`)
+To view the `stdout` or `stderr` of the container, you can just: `docker logs <container_name>` (e.g. `docker logs whalesay`).
+
+This will output to your terminal the output of that container. Now, not all logs are setup to write to stdout, so some logs you will have to exec into the container to view. But if you know where the location of the log is, you can easily copy that using the `cp` command: `docker cp <container>:/path/to/file .` or vice versa (`docker cp myfile <container>:/path/to/file`.
 
 ## Removing resources (images or containers)
 
-TODO: Add more content here...
+Performing clean up duties in docker is really useful since disk space can be consumed rather quickly. The easiest way to clear data up fast is to remove unwanted images, and remove stopped or exited containers. Luckily docker has some neat commands to help with this.
 
 To remove a specific image, you can do: `docker rmi <image_tag>` (e.g. `docker rmi whalesay`)
+
 If the image is not in use (e.g. in a running container), you can remove it. Otherwise, you will need to stop the container (`docker stop whalesay`) or add the `force` flag, such as `docker rmi -f whalesay`.
 
 To remove a specific container, you can do: `docker rmi <container_name>` (e.g. `docker rm whalesay`)
@@ -214,7 +235,25 @@ If the container is running, this will error - but can be removed by adding a `f
 
 ## Advanced Docker Topics
 
-TODO: Add more content here...
+Some advanced topics around docker that we aren't covering (but can if the request is there) are:
+- Inspecting a docker resource: `docker inspect <image_tag>/<container_name>`
+  Useful for looking at the JSON specifics of a container or image (or other resource). It basically does a data dump of everything you need to know about that resource.
+  
+- Using docker filters for resources: `docker images -f dangling=true`
+  Useful for filtering out wanted resources and reducing noise, but can also help with scripting functions such removing all images that are considered orphaned (e.g. `docker rmi $(docker images -f dangling=true -q)`).
+  
+- Using Docker volumes to create mount points from the docker host to inside a container.
+  EXAMPLE: `docker run -v HOST:CONTAINER` ... `docker run -v /etc/certs/ssl:/etc/certs/ssl`.
+  
+- Using environment variables and build args for deployments.
+  ENV vars can be set in a Dockerfile or on the command line:
+  - Dockerfile
+    ```Dockerfile
+    FROM ubuntu:latest
 
-Inspecting a docker resource: `docker inspect <image_tag>/<container_name>`
-Using docker filters for resources: `docker images -f dangling=true`
+    ENV http_proxy=127.0.0.1
+    ```
+  - Command line: `docker run -e http_proxy=127.0.0.1`
+  
+- Docker networking, such as how to configure overlay networks, port forwardings and so on.
+  - Port forward from container to host: `docker run -p 8080:80` (forwards port 80 in the container to 8080 on the localhost (localhost:8080)
