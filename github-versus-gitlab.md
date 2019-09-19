@@ -36,7 +36,7 @@ Since Git used primarily has a code repository, we are going to assume that pers
 
 If I am a developer who wants to write scripts in a programming language, or write an open-source program that can be used to integrate with something, I am going to store is in Git so that I can have a centralized location for all of my source code files, and if others want to help me with, I can add them to allow that capability. So now, how does Git handle multiple people contributing and writing code and pushing it to the repository? Won't that overwrite the changes someone else could have done?
 
-The short answer is, YES! One can absolutely overwrite changes to someone elses code if a proper workflow has not beeen defined. So what does a workflow typically look like?
+The short answer is, YES! One can absolutely overwrite changes to someone elses code if a proper workflow has not been defined. So what does a workflow typically look like?
 
 A Git workflow typically consists of a checkout of a branch, modifications to that branch, commiting the new changes to the branch, pushing those changes to the online source, and issuing a pull request (or merge request in GitLab). Lets break this down a little bit to understand each process.
 
