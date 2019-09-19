@@ -20,3 +20,9 @@ Let's look at this same approach using modern methodologies:
 - Rinse and Repeat!
 
 All of this can happen on a server or without a server, like a local box. This allows the developer to perform their own duties, building and deploying their own application, and then being able to test or allow QA to test. This also gives the developers a way to version their application builds using docker tags (e.g. latest, v1, v2, etc.). 
+
+As you can see this allows the developer to strictly focus on development of the application versus worrying about the sysadmin controls that follow with traditional VM's. This also makes things more secure because the developer can break out their application into smaller microservices, isolating and making packages/libraries independent. This makes the footprint for attack vectors easier to maintain and manage and if you need to update a component, you can easily do so without affecting the entire application stack.
+
+This also allows for easier tracking and rollbacks in the event a certain feature or version goes wrong, since docker images can be tagged with versions, and with the ability of git being able to rollback changes as well. The developer is now in control of all of this, leaving the sysadmin and ops to what they do best, and let the developer do what they do best - it's a win-win!
+
+I hope this tutorial gave you an insight into git and docker and how they can be used together or independently of one another. I will be adding more details eventually, and probably including an advanced topic later on - so stay tuned!
