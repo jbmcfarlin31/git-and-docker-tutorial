@@ -179,6 +179,15 @@ If the container image has already been built, you will not get the `Pull ...` s
 $> docker run --name whalesay -dit docker/whalesay
 f58554caab0356ea74285f354c508c1d515b8ff080b9f0b595dfa23bbb861674
 ```
+
+Notice the flags in the `docker run` command? Let's break down what those are:
+```bash
+-d, --detach                         Run container in background and print container ID
+-i, --interactive                    Keep STDIN open even if not attached
+-t, --tty                            Allocate a pseudo-TTY
+```
+You can easily see these also using `docker run --help`.
+
 To check if your container is running, refer to the next step.
 
 ## View running containers
@@ -212,7 +221,7 @@ This means you are now inside the container and can execute linux commands that 
 
 You should also note the command at the end `sh`. This a requirement for the `exec` command because this tells the container what you are going to do - and it has to be a command that is installed within the container, otherwise you will get an error.
 
-I know what you are thinking... _"What does the `-it` mean?"_, so let's cover that. Those are docker flags for the exec command - and in this case, the `-i` means interactive and the `-t` means terminal. This is what allows you to _ssh_ into the container interactively. There are a handful of other flags that can be passed, just hit up the docker documentation for full explanations.
+I know what you are thinking... _"What does the `-it` mean?"_, so let's cover that. Those are docker flags for the exec command - and in this case, the `-i` means interactive and the `-t` means tty (implements a pseudo-TTY). This is what allows you to _ssh_ into the container interactively. There are a handful of other flags that can be passed, just hit up the docker documentation for full explanations.
 
 ## Debugging a container
 
