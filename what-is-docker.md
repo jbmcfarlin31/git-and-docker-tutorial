@@ -100,7 +100,7 @@ You are going to want to build the image using the following:
 ```bash
 $ > docker build -t myfirstdockerimage .
 ```
-This command tells the docker daemon that we are going to build an image, we pass the `-t` flag indicating we are going to name this image `myfirstdockerimage`, and then finally we indicate that the `Dockerfile` exists in the current directory that we are executing the `docker build` command. You can specify a Dockerfile location for that if you were building elsewhere.
+This command tells the docker daemon that we are going to build an image, we pass the `-t` flag indicating we are going to name this image `myfirstdockerimage`, and then finally we indicate that the `Dockerfile` exists in the current directory that we are executing the `docker build` command by using the `.` at the end of the command. You can specify a Dockerfile location for that if you were building elsewhere by using the `docker build -t myimage:latest -f /path/to/Dockerfile` command.
 
 You should now see the following context occur:
 ```bash
