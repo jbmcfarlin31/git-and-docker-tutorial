@@ -37,11 +37,13 @@ Docker is a tool that was designed with the developers in mind, they wanted some
 
 - <b>_docker push_</b> is very similar to the `git push` command in the sense that Docker will take the image you built and push it to the local repository and/or the public/private repo of your choice.
 
-- <b>_docker commit</b> is very similar to the `git commit` command in the sense that Docker will take the image you built and push it to the public repo for Docker called `Docker Hub`.
+- <b>_docker commit_</b> is very similar to the `git commit` command in the sense that Docker will take the image you built and push it to the public repo for Docker called `Docker Hub`.
 
 - <b>_Dockerfile_</b> is the main file that will be used and referenced when building out your docker image, here is where you specify the configurations, users, packages, libraries, etc. that the application will need to function in the containe. Think of it as the instruction set that will be used for building the plan to run your container.
 
 Now that we have some basic definitions defined and terms outlined, let's get into the basic of Docker. Docker can be installed on just about any OS, and I think Windows might even be supported now. To install Docker, you can run the [script](https://github.com/jbmcfarlin31/git-and-docker-tutorial/blob/master/install_docker.sh) that I have provided. It will go out and get the official docker repository key, add the repo to the local boxes repo list (`/etc/apt/sources.list/`) and then install docker and configure the docker daemon to be accessed from other users (`usermod -aG docker ${USER}`). I should note that this will install Docker on `Ubuntu 16.04`, but can be modified based on the flavor of Linux you are running.
+
+**IMPORTANT: You should look at line 35 in the install script, specifically where it adds the <user> you are running Docker as to the `docker` group. This is crucial, otherwise the docker commands will result in a "Permission Denied" error. You might have to also run the script as "sudo" (e.g. `sudo ./install_docker.sh`). The other option is to add "sudo" to the sys calls within the script.**
 
 Once docker has been installed successfully, you can perform the various docker commands that we will be covering:
 - `docker build -t <image-tag> .`
@@ -86,7 +88,7 @@ CMD ["/bin/bash"]
 
 This example has a little more going on with it, let's go deeper:
 - We already know what the _FROM_ and _CMD_ commands do. So let's skip those.
-- _COPY_ is similar to the _ADD_ command - they basically do the same thing, which is `copy` from `src` to `dest`. It is important here to note that the `src` must be a file that exists in the same directory as the Dockerfile, otherwise the copy will not work.
+- _COPY_ is similar to the _ADD_ command - they basically do the same thing, which is `copy` from `src` to `dest`. It is **IMPORTANT** here to note that the `src` **must be a file that exists in the same directory as the Dockerfile**, otherwise the copy will not work. The file does not have to do anything in this case, but if you want to see what the `COPY` command does, then simply `touch app.py` in the same directory as the `Dockerfile`.
 - _RUN_ is an instruction for Docker that tells it to execute a command inside the container. In this case, we are performing an `apt-get update` and then we are installing the JSON parser utility called `jq`. An important thing to note here is that anything you plan to install inside the container, you <b>MUST</b> pass the `no user input` flag (in this case `-y`) for force install - otherwise the `docker build` will fail.
 
 You can do many other commands, and options are almost endless. But these are the basic we will need for the sake of this tutorial.
@@ -187,6 +189,44 @@ Notice the flags in the `docker run` command? Let's break down what those are:
 -t, --tty                            Allocate a pseudo-TTY
 ```
 You can easily see these also using `docker run --help`.
+
+### ** Lab Notice:**
+For a quick lab, do the same command above to run whalesay, but remove the `-d` flag, add `--rm` to cleanup the container after it runs, and pass in some args to the `cowsay` module in the container:
+```bash
+$> docker run --name whalesay -it docker/whalesay
+Unable to find image 'docker/whalesay:latest' locally
+latest: Pulling from docker/whalesay
+e190868d63f8: Pull complete 
+909cd34c6fd7: Pull complete 
+0b9bfabab7c1: Pull complete 
+a3ed95caeb02: Pull complete 
+00bf65475aba: Pull complete 
+c57b6bcc83e3: Pull complete 
+8978f6879e2f: Pull complete 
+8eed3712d2cf: Pull complete 
+Digest: sha256:178598e51a26abbc958b8a2e48825c90bc22e641de3d31e18aaf55f3258ba93b
+Status: Downloaded newer image for docker/whalesay:latest
+6fcf2f8cccbae6f875d9536882066fbd4b6af94b208393f6a64546eb7edbe263
+```
+
+Now, let's actually run this image and see what it does:
+```bash
+$> docker run --rm --name whalesay -dit docker/whalesay cowsay Hello, World!
+ _______________
+< Hello, World! >
+ ---------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /""""""""""""""""___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/
+```
 
 To check if your container is running, refer to the next step.
 
